@@ -1,6 +1,29 @@
 const pool = require("../config/database");
 
+exports.getProducts = async (req, res, next) => {
+    const query = 'SELECT * FROM "product";';
 
+    try {
+        const products = await pool.query(query);
+        if(products.rowCount < 1) {
+            return res.status(404).send({
+                status: 'fail',
+                message: 'No Products Found!'
+            })
+        }
+        return res.status(200).send({
+            status: 'success',
+            message: 'Products Retrieved Successfully',
+            data: products.rows
+        })
+    } catch(err) {
+        return res.status(500).send({
+            status: 'error',
+            message: 'Internal Server Error',
+            error: err.message
+        })
+    }
+}
 
 
 
