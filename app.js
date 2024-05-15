@@ -29,3 +29,6 @@ testDBConnection()
             console.log(`Server Running On ${PORT}`)
         })
     })
+    .catch(err => {
+        console.err(err);
+    })
