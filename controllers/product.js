@@ -84,3 +84,29 @@ exports.editProduct = async (req, res, next) => {
         })
     }
 }
+
+
+exports.getProductById = async (req, res, next) => {
+    const query = 'SELECT * FROM "product" WHERE id=$1;';
+    try {
+        const { id } = req.params;
+        const product = await pool.query(query, [id]);
+        if(product.rowCount < 1) {
+            return res.status(404).send({
+                status: 'fail',
+                message: 'No Product Found!'
+            })
+        }
+        return res.status(200).send({
+            status: 'success',
+            message: 'Product Retrieved',
+            data: product.rows[0]
+        })
+    } catch(err) {
+        return res.status(500).send({
+            status: 'error',
+            message: 'Internal Server Error',
+            error: err.message
+        })
+    }
+}
