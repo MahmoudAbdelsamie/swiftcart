@@ -13,7 +13,7 @@ exports.getProducts = async (req, res, next) => {
         }
         return res.status(200).send({
             status: 'success',
-            message: 'Products Retrieved Successfully',
+            message: 'Products Retrieved',
             data: products.rows
         })
     } catch(err) {
@@ -24,8 +24,6 @@ exports.getProducts = async (req, res, next) => {
         })
     }
 }
-
-
 
 exports.addProduct = async (req, res, next) => {
     const query = 'INSERT INTO "product" (name, description, price, stock_qty, category) VALUES ($1, $2, $3, $4, $5);';
@@ -40,7 +38,7 @@ exports.addProduct = async (req, res, next) => {
         await pool.query(query, [name, description, price, stock_qty, category]);
         return res.status(201).send({
             status: 'success',
-            message: 'Product Added Successfully'
+            message: 'Product Added'
         })
     } catch(err) {
         return res.status(500).send({
@@ -73,7 +71,7 @@ exports.editProduct = async (req, res, next) => {
         await pool.query(query, [name, description, price, stock_qty, category, id]);
         return res.status(200).send({
             status: 'success',
-            message: 'Product Updated Successfully'
+            message: 'Product Updated'
         })
 
     } catch(err) {
@@ -84,7 +82,6 @@ exports.editProduct = async (req, res, next) => {
         })
     }
 }
-
 
 exports.getProductById = async (req, res, next) => {
     const query = 'SELECT * FROM "product" WHERE id=$1;';
@@ -101,6 +98,24 @@ exports.getProductById = async (req, res, next) => {
             status: 'success',
             message: 'Product Retrieved',
             data: product.rows[0]
+        })
+    } catch(err) {
+        return res.status(500).send({
+            status: 'error',
+            message: 'Internal Server Error',
+            error: err.message
+        })
+    }
+}
+
+exports.deleteProduct = async (req, res, next) => {
+    const query = 'DELETE FROM "product" WHERE id=$1;';
+    try {
+        const { id } = req.params;
+        await pool.query(query, [id]);
+        return res.status(200).send({
+            status: 'success',
+            message: 'Product Deleted'
         })
     } catch(err) {
         return res.status(500).send({
