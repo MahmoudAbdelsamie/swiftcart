@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const { testDBConnection } = require('./utils/helper');
 
 const productRoutes = require('./routes/product');
+const userRoutes = require('./routes/user')
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.get('/', (req, res) => {
 
 
 app.use('/api/v1', productRoutes);
+app.use('/api/v1', userRoutes);
 
 testDBConnection() 
     .then(() => {
