@@ -1,4 +1,4 @@
-const { addToCart } = require('../controllers/cart');
+const { addToCart, getCart } = require('../controllers/cart');
 const { isAuthorized } = require('../middlewares/user');
 
 const router = require('express').Router();
@@ -8,6 +8,10 @@ router
     .post(
         isAuthorized,
         addToCart
+    )
+    .get(
+        isAuthorized,
+        getCart
     )
 
 
