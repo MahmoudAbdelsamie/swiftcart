@@ -81,3 +81,27 @@ exports.getUserById = async (req, res, next) => {
 
 }
 
+exports.deleteUserById = async (req, res, next) => {
+    const userId = req.params.id;
+    const query = 'DELETE FROM users WHERE id = $1;';
+    const getUserQuery = 'SELECT * FROM users WHERE id = $1;'
+    try {
+        const { rows } = await pool.query(getUserQuery, [userId]);
+        if(rows.length < 1) {
+            return res.json({
+                message: 'No User Found'
+            })
+        }
+        await pool.query(query, [userId]);
+        return res.status(200).send({
+            status: 'success',
+            message: 'User Deleted'
+        })
+    } catch(err) {
+        return res.status(500).send({
+            status: 'error',
+            message: 'Internal Server Error',
+            error: err.message 
+        })
+    }
+}
