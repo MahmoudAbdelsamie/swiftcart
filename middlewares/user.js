@@ -20,7 +20,7 @@ exports.isAuthorized = (req, res, next) => {
             })
         }
         const userId = decoded.id;
-        const query = 'SELECT id, username, email FROM users WHERE id=$1;';
+        const query = 'SELECT id, username, email, role FROM users WHERE id=$1;';
         try {
             const users = await pool.query(query, [userId]);
             if(users.rowCount < 1) {

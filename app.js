@@ -7,6 +7,8 @@ const { testDBConnection } = require('./utils/helper');
 const productRoutes = require('./routes/product');
 const userRoutes = require('./routes/user');
 const cartRoutes = require('./routes/cart');
+const adminRoutes = require('./routes/admin');
+
 
 const app = express();
 
@@ -23,6 +25,8 @@ app.get('/', (req, res) => {
 app.use('/api/v1', productRoutes);
 app.use('/api/v1', userRoutes);
 app.use('/api/v1', cartRoutes);
+app.use('/api/v1', adminRoutes);
+
 
 
 testDBConnection() 
