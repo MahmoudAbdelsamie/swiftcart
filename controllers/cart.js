@@ -38,7 +38,7 @@ exports.getCart = async (req, res, next) => {
   const cartId = await getOrCreateCart(userId);
   const cartItemsQuery = `
     SELECT 
-	    ci.cart_id,
+	    ci.id,
         p.id AS product_id,
         p.name AS product_name,
         p.price,
@@ -66,16 +66,34 @@ exports.getCart = async (req, res, next) => {
     const cartItems = await pool.query(cartItemsQuery, [cartId]);
     const totalCartPrice = await pool.query(cartPriceQuery, [cartId]);
     return res.status(200).send({
-        status: 'success',
-        message: 'Cart Item Retrieved',
-        data: cartItems.rows,
-        total: totalCartPrice.rows[0].total_cart_price
-    })
+      status: "success",
+      message: "Cart Item Retrieved",
+      data: cartItems.rows,
+      total: totalCartPrice.rows[0].total_cart_price,
+    });
   } catch (err) {
     return res.status(500).send({
       status: "error",
       message: "Internal Server Error",
       error: err.message,
+    });
+  }
+};
+
+exports.deleteCartItemById = async (req, res, next) => {
+  const id = req.params.cartItemId;
+  const query = "DELETE FROM cart_items WHERE id = $1;";
+  try {
+    await pool.query(query, [id]);
+    return res.status(200).send({
+      status: "success",
+      message: "Cart Item Removed"
+    });
+  } catch (err) {
+    return res.status(500).send({
+      status: "error",
+      message: "Internal Server Error",
+      error: err.message
     });
   }
 };
