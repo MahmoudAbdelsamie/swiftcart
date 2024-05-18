@@ -1,5 +1,8 @@
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
+
 
 require('dotenv').config();
 
@@ -164,6 +167,88 @@ exports.updatePassword = async (req, res, next) => {
         return res.status(200).send({
             status: 'success',
             message: 'Password Updated',
+        })
+    } catch(err) {
+        return res.status(500).send({
+            status: 'error',
+            message: 'Internal Server Error',
+            error: err.message
+        })
+    }
+}
+
+
+exports.forgetPasswordRequest = async (req, res, next) => {
+    const { email } = req.body;
+    const getUserQuery = 'SELECT * FROM users WHERE email = $1;';
+    const addResetTokenQuery = 'UPDATE users SET reset_token = $1, reset_token_expires = $2 WHERE id = $3;';
+    try {
+        const userResult = await pool.query(getUserQuery, [email]);
+        if(userResult.rowCount < 1) {
+            return res.status(404).send({
+                status: 'fail',
+                message: 'No User Found!'
+            })
+        }
+        const user = userResult.rows[0];
+
+        const token = crypto.randomBytes(32).toString('hex');
+        const tokenExpires = new Date(Date.now() + (60*60*1000));
+        
+        await pool.query(addResetTokenQuery, [token, tokenExpires, user.id]);
+        // makes an error using .env so replace with email & app password direct
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.EMAIL,
+                pass: process.env.EMAIL_APP_PASS,
+            }
+        });
+        const mailOptions = {
+            from: 'msomaa38@gmail.com',
+            to: email,
+            subject: 'Password Reset Request',
+            text: `You requested a password reset. Click the link below to reset your password:\n\nhttp://localhost:5000/api/v1/user/reset-password?token=${token}\n\nThis link will expire in 1 hour.`,
+        }
+
+        await transporter.sendMail(mailOptions);
+
+        return res.status(200).send({
+            status: 'success',
+            message: 'Password Reset Email Sent'
+        })
+    } catch(err) {
+        return res.status(500).send({
+            status: 'error',
+            message: 'Internal Server Error',
+            error: err.message
+        })
+    }
+};
+
+
+exports.verifyForgetPassword = async (req, res, next) => {
+    const {
+        token,
+        newPassword
+    } = req.body;
+    const getUserQuery = `SELECT * FROM users WHERE reset_token = $1 AND reset_token_expires > NOW();`;
+    const updatePasswordQuery = `UPDATE users SET password = $1, reset_token = NULL, reset_token_expires = NULL WHERE id = $2;`;
+    try {
+        const userResult = await pool.query(getUserQuery, [token]);
+        if(userResult.rowCount < 1) {
+            return res.status(400).send({
+                status: 'fail',
+                message: 'Invalid Or Expires Token'
+            });
+        }
+        const user = userResult.rows[0];
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+        await pool.query(updatePasswordQuery, [hashedPassword, user.id]);
+        return res.status(200).send({
+            status: 'success',
+            message: 'Password Reset'
         })
     } catch(err) {
         return res.status(500).send({
