@@ -88,6 +88,32 @@ exports.getProductsBySearch = async (req, res, next) => {
 }
 
 
+
+exports.getProductCategories = async (req, res, next) => {
+    const query = `SELECT * FROM categories;`;
+    try {
+        const categoriesResult = await pool.query(query);
+        if(categoriesResult.rowCount < 1) {
+            return req.status(404).send({
+                status: 'fail',
+                message: 'No Categories Found!'
+            })
+        }
+        const categories = categoriesResult.rows;
+        return res.status(200).send({
+            status: 'success',
+            message: 'Categories Retrieved',
+            data: categories
+        })
+    } catch(err) {
+        return res.status(500).send({
+            status: 'error',
+            message: 'Internal Server Error',
+            error: err.message
+        })
+    }
+}
+
 exports.editProduct = async (req, res, next) => {
     const query = 'UPDATE products SET name=$1, description=$2, price=$3, stock=$4, category_id=$5 WHERE id=$6;';
     const productQuery = 'SELECT * FROM products WHERE id=$1;'
