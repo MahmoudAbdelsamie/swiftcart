@@ -1,13 +1,14 @@
 const pool = require("../config/database");
+const { getOrCreateCart } = require("../utils/cart");
 
 
 exports.createOrder = async (req, res, next) => {
     const {
-        cartId,
         shippingAddress,
         paymentMethod,
     } = req.body;
     const user_id = req.user.id;
+    const cartId = await getOrCreateCart(user_id);
     try {
         const getCartItemsQuery = `
             SELECT
@@ -78,7 +79,7 @@ exports.createOrder = async (req, res, next) => {
         return res.status(201).send({
             status: 'success',
             message: 'Order Created',
-            data: orderId
+            orderId: orderId
         })
     } catch(err) {
         return res.status(500).send({
@@ -87,10 +88,6 @@ exports.createOrder = async (req, res, next) => {
             error: err.message
         })
     }
-
-
-
-
 }
 
 
