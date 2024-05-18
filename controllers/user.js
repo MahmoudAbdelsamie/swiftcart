@@ -78,3 +78,20 @@ exports.login = async (req, res, next) => {
         })
     }
 }
+
+
+exports.getUserProfile = async (req, res, next) => {
+    try {
+        return res.status(200).send({
+            status: 'success',
+            message: 'User Profile Retrieved',
+            data: req.user
+        })
+    } catch(err) {
+        return res.status(500).send({
+            status: 'error',
+            message: 'Internal Server Error',
+            error: err.message
+        })
+    }
+};
