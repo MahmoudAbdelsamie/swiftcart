@@ -65,6 +65,29 @@ exports.getProducts = async (req, res, next) => {
 
 
 
+exports.getProductsBySearch = async (req, res, next) => {
+    const {query} = req.query;
+    const sqlQuery = `SELECT * FROM products WHERE name ILIKE $1 OR description ILIKE $1`
+    try {
+        const productsResult = await pool.query(sqlQuery, [`%${query}%`]);
+        if(productsResult.rowCount < 1) {
+            return res.json({ message: 'No Results Matched!' });
+        }
+        const products = productsResult.rows
+        return res.status(200).send({
+            status: 'success',
+            message: 'Products Retrieved',
+            data: products
+        })
+    } catch(err) {
+        return res.status(500).send({
+            status: 'error',
+            message: 'Internal Server Error',
+            error: err.message
+        })
+    }
+}
+
 
 
 
