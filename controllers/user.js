@@ -205,7 +205,7 @@ exports.forgetPasswordRequest = async (req, res, next) => {
             }
         });
         const mailOptions = {
-            from: 'msomaa38@gmail.com',
+            from: process.env.EMAIL,
             to: email,
             subject: 'Password Reset Request',
             text: `You requested a password reset. Click the link below to reset your password:\n\nhttp://localhost:5000/api/v1/user/reset-password?token=${token}\n\nThis link will expire in 1 hour.`,
