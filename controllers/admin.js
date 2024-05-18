@@ -131,3 +131,69 @@ exports.addProduct = async (req, res, next) => {
         })
     }
 };
+
+
+exports.updateProduct = async (req, res, next) => {
+  const { id } = req.params;
+  const {
+    name,
+    description,
+    price,
+    stock,
+    category_id
+  } = req.body;
+  try {
+    let query = `UPDATE products SET `;
+    const values = [];
+    let index = 1;
+    if(name) {
+      query += `name = $${index++}, `;
+      values.push(name);
+    }
+    if(description) {
+      query += `description = $${index++}, `;
+      values.push(description);
+    }
+    if(price) {
+      query += `price = $${index++}, `;
+      values.push(price);
+    }
+    if(stock) {
+      query += `stock = $${index++}, `;
+      values.push(stock);
+    }
+    if(category_id) {
+      query += `category_id = $${index++}, `;
+      values.push(category_id)
+    }
+    if(req.file) {
+      const imageBase64 = req.file.buffer.toString('base64');
+      query += `image = $${index++}, `;
+      values.push(imageBase64);
+    }
+    query = query.slice(0, -2) + ` WHERE id = $${index} RETURNING id, name, description, price, stock, category_id, image`;
+    values.push(id);
+    const productResult = await pool.query(query, values);
+    if(productResult.rowCount < 1) {
+      return res.status(404).send({
+        status: 'fail',
+        message: 'Product Not Found'
+      })
+    }
+    const updatedProduct = productResult.rows[0];
+    return res.status(200).send({
+      status: 'success',
+      message: 'Product Updated',
+      data: updatedProduct
+    })
+  } catch(err) {
+    return res.status(500).send({
+        status: 'error',
+        message : 'Internal Server Error',
+        error: err.message
+    })
+  }
+}
+
+
+

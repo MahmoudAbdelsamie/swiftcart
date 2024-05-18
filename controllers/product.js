@@ -64,7 +64,6 @@ exports.getProducts = async (req, res, next) => {
 };
 
 
-
 exports.getProductsBySearch = async (req, res, next) => {
     const {query} = req.query;
     const sqlQuery = `SELECT * FROM products WHERE name ILIKE $1 OR description ILIKE $1`
@@ -88,32 +87,6 @@ exports.getProductsBySearch = async (req, res, next) => {
     }
 }
 
-
-
-
-exports.addProduct = async (req, res, next) => {
-    const query = 'INSERT INTO products (name, description, price, stock, category_id) VALUES ($1, $2, $3, $4, $5)';
-    try {
-        const {
-            name,
-            description, 
-            price,
-            stock,
-            category_id
-        } = req.body;
-        await pool.query(query, [name, description, price, stock, category_id]);
-        return res.status(201).send({
-            status: 'success',
-            message: 'Product Added'
-        })
-    } catch(err) {
-        return res.status(500).send({
-            status: 'error',
-            message: 'Internal Server Error',
-            error: err.message
-        })
-    }
-}
 
 exports.editProduct = async (req, res, next) => {
     const query = 'UPDATE products SET name=$1, description=$2, price=$3, stock=$4, category_id=$5 WHERE id=$6;';
