@@ -134,3 +134,42 @@ exports.updateUserProfile = async (req, res, next) => {
     }
 }
 
+exports.updatePassword = async (req, res, next) => {
+    const id = req.user.id;
+    const {
+        oldPassword,
+        newPassword
+    } = req.body;
+    const getPasswordQuery = `SELECT password FROM users WHERE id = $1;`;
+    const updatePasswordQuery = `UPDATE users SET password = $1 WHERE id = $2;`;
+    try {
+        const userResult = await pool.query(getPasswordQuery, [id]);
+        if(userResult.rowCount < 1) {
+            return res.status(404).send({
+                status: 'fail',
+                message: 'User Not Found'
+            })
+        }
+        const user = userResult.rows[0];
+        const isMatch = await bcrypt.compare(oldPassword, user.password);
+        if(!isMatch) {
+            return res.status(400).send({
+                status: 'fail',
+                message: 'Old Password Is Incorrect!'
+            })
+        }
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+        await pool.query(updatePasswordQuery, [hashedPassword, id]);
+        return res.status(200).send({
+            status: 'success',
+            message: 'Password Updated',
+        })
+    } catch(err) {
+        return res.status(500).send({
+            status: 'error',
+            message: 'Internal Server Error',
+            error: err.message
+        })
+    }
+}
