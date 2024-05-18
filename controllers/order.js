@@ -92,3 +92,64 @@ exports.createOrder = async (req, res, next) => {
 
 
 }
+
+
+exports.getOrderDetails = async (req, res, next) => {
+    const { id } = req.params;
+    const orderQuery = `
+    SELECT 
+        o.id,
+        o.user_id,
+        o.total,
+        o.payment_method,
+        a.street,
+        a.city,
+        a.state,
+        a.zip,
+        a.country
+    FROM
+        orders o
+    JOIN
+        addresses a ON o.shipping_address_id = a.id
+    WHERE
+        o.id = $1;
+    `;
+    const orderItemsQuery = `
+        SELECT 
+            oi.product_id,
+            p.name AS product_name,
+            oi.quantity,
+            oi.price
+        FROM
+            order_items oi
+        JOIN
+            products p ON oi.product_id = p.id
+        WHERE 
+            oi.order_id = $1;
+    `;
+    try {
+        const orderResult = await pool.query(orderQuery, [id]);
+        if(orderResult.rowCount < 1) {
+            return res.status(404).send({
+                status: 'fail',
+                message: 'No Order Found!'
+            })
+        }
+        const order = orderResult.rows[0];
+        const orderItemsResult = await pool.query(orderItemsQuery ,[id]);
+        const orderItems = orderItemsResult.rows;
+        return res.status(200).send({
+            status: 'success',
+            message: 'Order & Items Retrieved',
+            order: order,
+            items: orderItems
+        })
+        
+    } catch(err) {
+        return res.status(500).send({
+            status: 'fail',
+            message: 'Internal Server Error',
+            error: err.message
+        })
+    }
+} 
