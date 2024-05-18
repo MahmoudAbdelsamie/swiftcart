@@ -88,6 +88,7 @@ exports.getProductsBySearch = async (req, res, next) => {
 }
 
 
+
 exports.getProductCategories = async (req, res, next) => {
     const query = `SELECT * FROM categories;`;
     try {
@@ -112,7 +113,6 @@ exports.getProductCategories = async (req, res, next) => {
         })
     }
 }
-
 
 exports.editProduct = async (req, res, next) => {
     const query = 'UPDATE products SET name=$1, description=$2, price=$3, stock=$4, category_id=$5 WHERE id=$6;';

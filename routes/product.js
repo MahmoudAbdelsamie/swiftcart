@@ -13,6 +13,7 @@ const router = require("express").Router();
 router.get("/products", getProducts);
 router.get("/products/search", getProductsBySearch);
 
+
 router.get('/products/categories', getProductCategories)
 
 router
