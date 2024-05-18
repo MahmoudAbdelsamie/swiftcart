@@ -95,3 +95,42 @@ exports.getUserProfile = async (req, res, next) => {
         })
     }
 };
+
+
+exports.updateUserProfile = async (req, res, next) => {
+    const userId = req.user.id;
+    const {
+        username,
+        email
+    } = req.body;
+    let query = `UPDATE users SET `;
+    try {
+        const values = [];
+        if(username) {
+            values.push(username);
+            query += `username = $${values.length} `;
+        }
+        if(email) {
+            if(values.length) { query += `, `; }
+            values.push(email); 
+            query += `email = $${values.length} `;
+        }
+        values.push(userId);
+        query += `WHERE id = $${values.length} RETURNING id, username, email, role;`;
+        
+        const userResult = await pool.query(query, values);
+        const updatedUser = userResult.rows[0];
+        return res.status(200).send({
+            status: 'success',
+            message: 'User Updated',
+            data: updatedUser
+        })
+    } catch(err) {
+        return res.status(500).send({
+            status: 'error',
+            message: 'Internal Server Error',
+            error: err.message
+        })
+    }
+}
+
