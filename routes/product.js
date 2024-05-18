@@ -5,12 +5,15 @@ const {
   getProductById,
   deleteProduct,
   getProductsBySearch,
+  getProductCategories,
 } = require("../controllers/product");
 
 const router = require("express").Router();
 
 router.get("/products", getProducts);
 router.get("/products/search", getProductsBySearch);
+
+router.get('/products/categories', getProductCategories)
 
 router.post("/product", addProduct);
 
