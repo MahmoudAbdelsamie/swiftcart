@@ -62,3 +62,36 @@ exports.getWishlist = async (req, res, next) => {
 
 }
 
+exports.deleteWishlistItem = async (req, res, next) => {
+    const userId = req.user.id;
+    const { itemId } = req.params;
+    const query = `
+        DELETE FROM wishlist
+        WHERE id = $1 AND user_id = $2
+        RETURNING *;
+    `;
+    try {
+        const wishlistResult = await pool.query(query, [itemId, userId]);
+
+        if (wishlistResult.rowCount < 1) {
+            return res.status(404).send({
+                status: 'fail',
+                message: 'Wishlist Item Not Found!'
+            });
+        }
+        const wishlistItem = wishlistResult.rows[0]
+
+        return res.status(200).send({
+            status: 'success',
+            message: 'Wishlist Item Removed',
+            data: wishlistItem
+        });
+    } catch (err) {
+        return res.status(500).send({
+            status: 'error',
+            message: 'Internal Server Error',
+            error: err.message
+        });
+    }
+
+}
