@@ -1,3 +1,4 @@
+const { query } = require("express");
 const pool = require("../config/database");
 
 // get users & their addresses
@@ -236,7 +237,44 @@ exports.getProducts = async (req, res, next) => {
   }
 }
 
-
+exports.getOrders = async (req, res, next) => {
+  const query = `
+    SELECT 
+      o.id,
+      o.user_id,
+      o.total,
+      o.payment_method,
+      a.street,
+      a.city,
+      a.state,
+      a.zip,
+      a.country
+    FROM
+        orders o
+    JOIN
+        addresses a ON o.shipping_address_id = a.id;
+  `;
+  try {
+    const ordersResult = await pool.query(query);
+    if(ordersResult.rowCount < 1) {
+      return res.json({
+        message: 'No Orders Found!'
+      })
+    }
+    const orders = ordersResult.rows;
+    return res.status(200).send({
+      status: 'success',
+      message: 'Orders Retrieved',
+      data: orders
+    })
+  } catch(err) {
+    return res.status(500).send({
+        status: 'error',
+        message: 'Internal Server Error',
+        error: err.message
+    })
+}
+}
 
 
 
