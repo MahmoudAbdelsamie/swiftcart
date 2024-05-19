@@ -11,6 +11,8 @@ const adminRoutes = require('./routes/admin');
 const orderRoutes = require('./routes/order');
 const paymentRoutes = require('./routes/payment');
 const shippingRoutes = require('./routes/shipping');
+const reviewRoutes = require('./routes/review');
+
 
 
 
@@ -35,6 +37,7 @@ app.use('/api/v1', adminRoutes);
 app.use('/api/v1', orderRoutes);
 app.use('/api/v1', paymentRoutes);
 app.use('/api/v1', shippingRoutes);
+app.use('/api/v1', reviewRoutes);
 
 
 
