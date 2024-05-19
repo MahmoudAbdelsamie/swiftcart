@@ -196,4 +196,136 @@ exports.updateProduct = async (req, res, next) => {
 }
 
 
+exports.deleteProductById = async (req, res, next) => {
+  const { id } = req.params;
+  const query = `DELETE FROM products WHERE id = $1;`;
+  try {
+    await pool.query(query, [id]);
+    return res.status(200).send({
+      status: 'success',
+      message: 'Product Deleted'
+    })
+  } catch(err) {
+    return res.status(500).send({
+        status: 'error',
+        message : 'Internal Server Error',
+        error: err.message
+    })
+  }
+}
+
+exports.getProducts = async (req, res, next) => {
+  const query = `SELECT * FROM products;`
+  try {
+      const productsResult = await pool.query(query);
+      if(productsResult.rowCount < 1) {
+          return res.json({ message: 'No Products found' });
+      }
+      const products = productsResult.rows
+      return res.status(200).send({
+          status: 'success',
+          message: 'Products Retrieved',
+          data: products
+      })
+  } catch(err) {
+      return res.status(500).send({
+          status: 'error',
+          message: 'Internal Server Error',
+          error: err.message
+      })
+  }
+}
+
+exports.getOrders = async (req, res, next) => {
+  const query = `
+    SELECT 
+      o.id,
+      o.user_id,
+      o.total,
+      o.payment_method,
+      a.street,
+      a.city,
+      a.state,
+      a.zip,
+      a.country
+    FROM
+        orders o
+    JOIN
+        addresses a ON o.shipping_address_id = a.id;
+  `;
+  try {
+    const ordersResult = await pool.query(query);
+    if(ordersResult.rowCount < 1) {
+      return res.json({
+        message: 'No Orders Found!'
+      })
+    }
+    const orders = ordersResult.rows;
+    return res.status(200).send({
+      status: 'success',
+      message: 'Orders Retrieved',
+      data: orders
+    })
+  } catch(err) {
+    return res.status(500).send({
+        status: 'error',
+        message: 'Internal Server Error',
+        error: err.message
+    })
+}
+}
+
+// GET Reports & Sales
+
+exports.getSalesReports = async (req, res, next) => {
+  const totalSalesQuery = `
+    SELECT SUM(total) AS total_sales
+    FROM orders
+    WHERE status = 'completed'
+  `;
+  const  salesPerProductQuery = `
+    SELECT p.id, p.name, SUM(oi.quantity) AS total_quantity_sold, SUM(oi.price * oi.quantity) AS total_sales
+    FROM order_items oi
+    JOIN products p ON oi.product_id = p.id
+    JOIN orders o ON oi.order_id = o.id
+    WHERE o.status = 'completed'
+    GROUP BY p.id, p.name
+  `;
+  const salesPerUserQuery = `
+    SELECT u.id, u.username, SUM(o.total) AS total_sales
+    FROM orders o
+    JOIN users u ON o.user_id = u.id
+    WHERE o.status = 'completed'
+    GROUP BY u.id, u.username
+  `;
+  try {
+    const totalSalesResult = await pool.query(totalSalesQuery);
+    const salesPerProductResult = await pool.query(salesPerProductQuery);
+    const salesPerUserResult = await pool.query(salesPerUserQuery);
+    return res.status(200).send({
+      status: 'success',
+      message: 'Sales Reports Retrieved',
+      totalSales: totalSalesResult.rows[0]?.total_sales || 0,
+      salesPerProduct: salesPerProductResult.rows,
+      salesPerUser: salesPerUserResult.rows
+    })
+  } catch(err) {
+    return res.status(500).send({
+        status: 'error',
+        message: 'Internal Server Error',
+        error: err.message
+    })
+}
+}
+
+
+
+
+
+
+
+
+
+
+
 
