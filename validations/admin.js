@@ -1,7 +1,7 @@
 const { param, body, check } = require("express-validator");
 
 exports.validateParamsId = [
-  param("id").isInt().withMessage("Params Id Must be An Integer"),
+  param("id").isInt().withMessage("Params Id Must be Aa integer"),
 ];
 
 exports.validateAddProduct = [
