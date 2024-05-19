@@ -31,3 +31,47 @@ exports.addReview = async (req, res, next) => {
         });
     }
 }
+
+exports.getReviews = async (req, res, next) => {
+    const { productId } = req.params;
+    const query = `
+        SELECT 
+            r.id AS review_id,
+            r.rating,
+            r.comment,
+            r.created_at,
+            u.id AS user_id,
+            u.username
+        FROM reviews r
+        JOIN users u ON r.user_id = u.id
+        WHERE r.product_id = $1
+        ORDER BY r.created_at DESC;
+    `;
+
+    try {
+        const reviewsResult = await pool.query(query, [productId]);
+        if(reviewsResult.rowCount < 1) {
+            return res.status(404).send({
+                status: 'fail',
+                message: 'No Reviews Found'
+            })
+        }
+        const reviews = reviewsResult.rows;
+        return res.status(200).send({
+            status: 'success',
+            message: 'Reviews Retrieved',
+            data: reviews
+        })
+
+    } catch (err) {
+        return res.status(500).send({
+            status: 'error',
+            message: 'Internal Server Error',
+            error: err.message
+        });
+    }
+}
+
+
+
+
