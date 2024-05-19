@@ -218,3 +218,43 @@ exports.getUserOrders = async (req, res, next) => {
 
 
 }
+
+exports.getOrderConfirm = async (req, res, next) => {
+    const userId = req.user.id;
+    const { orderId } = req.params;
+    const query = `
+    SELECT o.id, o.user_id, o.total, o.status, o.created_at,
+        u.username, u.email,
+        json_agg(json_build_object('product_id', p.id, 'name', p.name, 'quantity', oi.quantity, 'price', oi.price)) AS items
+    FROM orders o
+    JOIN users u ON o.user_id = u.id
+    JOIN order_items oi ON oi.order_id = o.id
+    JOIN products p ON oi.product_id = p.id
+    WHERE o.id = $1 AND o.user_id = $2
+    GROUP BY o.id, u.username, u.email
+    `;
+    try {
+        const orderResult = await pool.query(query, [orderId, userId]);
+        if(orderResult.rowCount < 1) {
+            return res.status(200).send({
+                message: 'No Order Found',
+                data: []
+            })
+        }
+        const order = orderResult.rows[0];
+        return res.status(200).send({
+            status: 'success',
+            message: 'Order Retrieved',
+            data: order
+        })
+
+    } catch(err) {
+        return res.status(500).send({
+            status: 'error',
+            message: 'Internal Server Error',
+            error: err.message
+        })
+    }
+}
+
+

@@ -19,7 +19,5 @@ router.get('/products/categories', getProductCategories)
 router
   .route("/product/:id")
   .get(getProductById)
-  .put(editProduct)
-  .delete(deleteProduct);
 
 module.exports = router;
