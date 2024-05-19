@@ -1,6 +1,7 @@
 const multer = require("multer");
 
 
+
 const {
   getUsers,
   getUserById,
@@ -13,10 +14,6 @@ const {
   getSalesReports,
 } = require("../controllers/admin");
 const { getProductById } = require("../controllers/product");
-
-
-const { getUsers, getUserById, deleteUserById, addProduct, updateProduct, deleteProductById, getProducts } = require("../controllers/admin");
-const { getProductById } = require('../controllers/product')
 const { isAdmin } = require("../middlewares/admin");
 const { isAuthorized } = require("../middlewares/user");
 
@@ -36,6 +33,7 @@ router.post(
   addProduct
 );
 
+
 // PUT Update-Product
 router.put('/admin/products/:id', isAuthorized, isAdmin, upload.single("image"), updateProduct);
 // DELETE product
@@ -44,6 +42,7 @@ router.delete('/admin/products/:id', isAuthorized, isAdmin, deleteProductById);
 router.get('/admin/products', isAuthorized, isAdmin, getProducts);
 // GET Specific Prodcut
 router.get('/admin/products/:id', isAuthorized, isAdmin, getProductById);
+
 
 // DELETE product
 router.delete("/admin/products/:id", isAuthorized, isAdmin, deleteProductById);
@@ -69,5 +68,6 @@ router.delete("/admin/users/:id", isAuthorized, isAdmin, deleteUserById);
 
 // Get Sales Reports
 router.get('/admin/reports/sales', isAuthorized, isAdmin, getSalesReports)
+
 
 module.exports = router;

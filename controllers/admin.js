@@ -1,3 +1,4 @@
+const { query } = require("express");
 const pool = require("../config/database");
 
 // get users & their addresses
@@ -236,6 +237,7 @@ exports.getProducts = async (req, res, next) => {
   }
 }
 
+
 exports.getProducts = async (req, res, next) => {
   const query = `SELECT * FROM products;`
   try {
@@ -257,6 +259,7 @@ exports.getProducts = async (req, res, next) => {
       })
   }
 }
+
 
 exports.getOrders = async (req, res, next) => {
   const query = `
@@ -296,6 +299,7 @@ exports.getOrders = async (req, res, next) => {
     })
 }
 }
+
 
 // GET Reports & Sales
 
@@ -339,6 +343,7 @@ exports.getSalesReports = async (req, res, next) => {
     })
 }
 }
+
 
 
 
