@@ -214,6 +214,7 @@ exports.deleteProductById = async (req, res, next) => {
   }
 }
 
+
 exports.getProducts = async (req, res, next) => {
   const query = `SELECT * FROM products;`
   try {
@@ -317,6 +318,7 @@ exports.getSalesReports = async (req, res, next) => {
     })
 }
 }
+
 
 
 
