@@ -257,4 +257,41 @@ exports.getOrderConfirm = async (req, res, next) => {
     }
 }
 
+exports.getOrderTrack = async (req, res, next) => {
+    const userId = req.user.id;
+    const { orderId } = req.params;
+    const query = `
+        SELECT o.id, o.status, o.created_at,
+            json_agg(json_build_object('product_id', p.id, 'name', p.name, 'quantity', oi.quantity, 'price', oi.price)) AS items
+        FROM orders o
+        JOIN order_items oi ON oi.order_id = o.id
+        JOIN products p ON oi.product_id = p.id
+        WHERE o.id = $1 AND o.user_id = $2
+        GROUP BY o.id
+    `;
+    try {
+        const orderResult = await pool.query(query, [userId, orderId]);
+        if(orderResult.rowCount < 1) {
+            return res.status(200).send({
+                message: 'No Order Found',
+                data: []
+            })
+        }
+        const order = orderResult.rows[0];
+        return res.status(200).send({
+            status: 'success',
+            message: 'Order Tracking Retrieved',
+            data: order
+        })
+    } catch(err) {
+        return res.status(500).send({
+            status: 'error',
+            message: 'Internal Server Error',
+            error: err.message
+        })
+    }
+}
+
+
+
 
