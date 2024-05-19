@@ -18,8 +18,6 @@ router.route("/orders/:id").get(isAuthorized, getOrderDetails);
 
 router.get("/user/orders", isAuthorized, getUserOrders);
 
-// router.get('/orders/history', isAuthorized, getOrdersHistory);
-
 router.get('/orders/confirm/:orderId', isAuthorized, getOrderConfirm);
 
 router.get('/orders/track/:orderId', isAuthorized, getOrderTrack);
