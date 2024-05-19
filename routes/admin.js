@@ -69,5 +69,4 @@ router.delete("/admin/users/:id", isAuthorized, isAdmin, deleteUserById);
 // Get Sales Reports
 router.get('/admin/reports/sales', isAuthorized, isAdmin, getSalesReports)
 
-
 module.exports = router;
