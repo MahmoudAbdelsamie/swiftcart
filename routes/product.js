@@ -1,9 +1,6 @@
 const {
-  addProduct,
   getProducts,
-  editProduct,
   getProductById,
-  deleteProduct,
   getProductsBySearch,
   getProductCategories,
 } = require("../controllers/product");
