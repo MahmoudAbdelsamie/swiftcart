@@ -10,6 +10,8 @@ const cartRoutes = require('./routes/cart');
 const adminRoutes = require('./routes/admin');
 const orderRoutes = require('./routes/order');
 const paymentRoutes = require('./routes/payment');
+const shippingRoutes = require('./routes/shipping');
+
 
 
 
@@ -32,7 +34,7 @@ app.use('/api/v1', cartRoutes);
 app.use('/api/v1', adminRoutes);
 app.use('/api/v1', orderRoutes);
 app.use('/api/v1', paymentRoutes);
-
+app.use('/api/v1', shippingRoutes);
 
 
 
