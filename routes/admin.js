@@ -1,6 +1,6 @@
 const multer = require('multer');
 
-const { getUsers, getUserById, deleteUserById, addProduct, updateProduct } = require("../controllers/admin");
+const { getUsers, getUserById, deleteUserById, addProduct, updateProduct, deleteProductById } = require("../controllers/admin");
 const { isAdmin } = require("../middlewares/admin");
 const { isAuthorized } = require("../middlewares/user");
 
@@ -15,6 +15,8 @@ const upload = multer({
 router.post('/admin/products', isAuthorized, isAdmin, upload.single("image"), addProduct);
 // PUT Update-Product
 router.put('/admin/products/:id', isAuthorized, isAdmin, upload.single("image"), updateProduct);
+// DELETE product
+router.delete('/admin/products/:id', isAuthorized, isAdmin, deleteProductById)
 
 
 
