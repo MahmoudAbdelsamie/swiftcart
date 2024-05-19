@@ -173,20 +173,3 @@ exports.getProductById = async (req, res, next) => {
     }
 }
 
-exports.deleteProduct = async (req, res, next) => {
-    const query = 'DELETE FROM products WHERE id=$1;';
-    try {
-        const { id } = req.params;
-        await pool.query(query, [id]);
-        return res.status(200).send({
-            status: 'success',
-            message: 'Product Deleted'
-        })
-    } catch(err) {
-        return res.status(500).send({
-            status: 'error',
-            message: 'Internal Server Error',
-            error: err.message
-        })
-    }
-}
