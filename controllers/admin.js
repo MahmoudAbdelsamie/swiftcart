@@ -214,6 +214,27 @@ exports.deleteProductById = async (req, res, next) => {
   }
 }
 
+exports.getProducts = async (req, res, next) => {
+  const query = `SELECT * FROM products;`
+  try {
+      const productsResult = await pool.query(query);
+      if(productsResult.rowCount < 1) {
+          return res.json({ message: 'No Products found' });
+      }
+      const products = productsResult.rows
+      return res.status(200).send({
+          status: 'success',
+          message: 'Products Retrieved',
+          data: products
+      })
+  } catch(err) {
+      return res.status(500).send({
+          status: 'error',
+          message: 'Internal Server Error',
+          error: err.message
+      })
+  }
+}
 
 exports.getProducts = async (req, res, next) => {
   const query = `SELECT * FROM products;`
