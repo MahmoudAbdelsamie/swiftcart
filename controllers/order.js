@@ -293,5 +293,56 @@ exports.getOrderTrack = async (req, res, next) => {
 }
 
 
+exports.getOrdersHistory = async (req, res, next) => {
+    const userId = req.user.id;
+    const query = `
+        SELECT 
+            o.id AS order_id,
+            o.total,
+            o.status,
+            o.created_at,
+            a.street,
+            a.city,
+            a.state,
+            a.zip,
+            a.country,
+            ARRAY_AGG(
+                JSON_BUILD_OBJECT(
+                    'product_id', oi.product_id,
+                    'product_name', p.name,
+                    'quantity', oi.quantity,
+                    'price', oi.price
+                )
+            ) AS items
+        FROM orders o
+        JOIN addresses a ON o.shipping_address_id = a.id
+        JOIN order_items oi ON o.id = oi.order_id
+        JOIN products p ON oi.product_id = p.id
+        WHERE o.user_id = $1
+        GROUP BY o.id, a.street, a.city, a.state, a.zip, a.country
+        ORDER BY o.created_at DESC;
+    `;
+    try {
+        const ordersResult = await pool.query(query, [userId]);
+        if(ordersResult.rowCount < 1) {
+            return res.status(200).send({
+                message: 'No Order History Found',
+                data: []
+            })
+        }
+        const orderHistory = ordersResult.rows;
+        return res.status(200).send({
+            status: 'success',
+            message: 'Order History Retrieved',
+            data: orderHistory
+        })
+    } catch(err) {
+        return res.status(500).send({
+            status: 'error',
+            message: 'Internal Server Error',
+            error: err.message
+        })
+    }
+}
 
 
