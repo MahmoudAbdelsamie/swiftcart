@@ -12,6 +12,8 @@ const orderRoutes = require('./routes/order');
 const paymentRoutes = require('./routes/payment');
 const shippingRoutes = require('./routes/shipping');
 const reviewRoutes = require('./routes/review');
+const wishlistRoutes = require('./routes/wishlist');
+
 
 
 
@@ -38,6 +40,9 @@ app.use('/api/v1', orderRoutes);
 app.use('/api/v1', paymentRoutes);
 app.use('/api/v1', shippingRoutes);
 app.use('/api/v1', reviewRoutes);
+app.use('/api/v1', wishlistRoutes);
+
+
 
 
 
