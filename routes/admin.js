@@ -9,6 +9,7 @@ const {
   deleteProductById,
   getProducts,
   getOrders,
+  getSalesReports,
 } = require("../controllers/admin");
 const { getProductById } = require("../controllers/product");
 const { isAdmin } = require("../middlewares/admin");
@@ -60,5 +61,8 @@ router.get("/admin/users/:id", isAuthorized, isAdmin, getUserById);
 
 // Delete User By id
 router.delete("/admin/users/:id", isAuthorized, isAdmin, deleteUserById);
+
+// Get Sales Reports
+router.get('/admin/reports/sales', isAuthorized, isAdmin, getSalesReports)
 
 module.exports = router;
