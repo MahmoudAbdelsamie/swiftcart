@@ -16,7 +16,7 @@ const wishlistRoutes = require('./routes/wishlist');
 
 
 
-
+const {errorHandler} = require('./middlewares/errorHandler');
 
 
 
@@ -45,7 +45,7 @@ app.use('/api/v1', wishlistRoutes);
 
 
 
-
+app.use(errorHandler);
 
 testDBConnection() 
     .then(() => {

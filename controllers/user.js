@@ -7,6 +7,7 @@ const nodemailer = require('nodemailer');
 require('dotenv').config();
 
 const pool = require("../config/database");
+const { AppError, NotFoundError } = require('../utils/errors');
 
 
 exports.register = async (req, res, next) => {
@@ -35,11 +36,7 @@ exports.register = async (req, res, next) => {
             token: token
         })
     } catch(err) {
-        return res.status(500).send({
-            status: 'error',
-            message: 'Internal Server Error',
-            error: err.message
-        })
+        return next(new AppError(err.message, 500))
     }
 }
 
@@ -52,10 +49,7 @@ exports.login = async (req, res, next) => {
     try {
         const users = await pool.query(query, [email]);
         if(users.rowCount < 1) {
-            return res.status(404).send({
-                status: 'fail',
-                message: 'No User Found'
-            })
+            return next(new NotFoundError('No User Found'))
         }
         const user = users.rows[0];
         const hashedPassword = user.password;
@@ -74,11 +68,7 @@ exports.login = async (req, res, next) => {
             token: token
         })
     } catch(err) {
-        return res.status(500).send({
-            status: 'error',
-            message: 'Internal Server Error',
-            error: err.message
-        })
+        return next(new AppError(err.message, 500))
     }
 }
 
@@ -91,11 +81,7 @@ exports.getUserProfile = async (req, res, next) => {
             data: req.user
         })
     } catch(err) {
-        return res.status(500).send({
-            status: 'error',
-            message: 'Internal Server Error',
-            error: err.message
-        })
+        return next(new AppError(err.message, 500))
     }
 };
 
@@ -129,11 +115,7 @@ exports.updateUserProfile = async (req, res, next) => {
             data: updatedUser
         })
     } catch(err) {
-        return res.status(500).send({
-            status: 'error',
-            message: 'Internal Server Error',
-            error: err.message
-        })
+        return next(new AppError(err.message, 500))
     }
 }
 
@@ -148,10 +130,7 @@ exports.updatePassword = async (req, res, next) => {
     try {
         const userResult = await pool.query(getPasswordQuery, [id]);
         if(userResult.rowCount < 1) {
-            return res.status(404).send({
-                status: 'fail',
-                message: 'User Not Found'
-            })
+            return next(new NotFoundError('No User Found'))
         }
         const user = userResult.rows[0];
         const isMatch = await bcrypt.compare(oldPassword, user.password);
@@ -169,11 +148,7 @@ exports.updatePassword = async (req, res, next) => {
             message: 'Password Updated',
         })
     } catch(err) {
-        return res.status(500).send({
-            status: 'error',
-            message: 'Internal Server Error',
-            error: err.message
-        })
+        return next(new AppError(err.message, 500))
     }
 }
 
@@ -185,10 +160,7 @@ exports.forgetPasswordRequest = async (req, res, next) => {
     try {
         const userResult = await pool.query(getUserQuery, [email]);
         if(userResult.rowCount < 1) {
-            return res.status(404).send({
-                status: 'fail',
-                message: 'No User Found!'
-            })
+            return next(new NotFoundError('No User Found'))
         }
         const user = userResult.rows[0];
 
@@ -218,11 +190,7 @@ exports.forgetPasswordRequest = async (req, res, next) => {
             message: 'Password Reset Email Sent'
         })
     } catch(err) {
-        return res.status(500).send({
-            status: 'error',
-            message: 'Internal Server Error',
-            error: err.message
-        })
+        return next(new AppError(err.message, 500))
     }
 };
 
@@ -237,10 +205,7 @@ exports.verifyForgetPassword = async (req, res, next) => {
     try {
         const userResult = await pool.query(getUserQuery, [token]);
         if(userResult.rowCount < 1) {
-            return res.status(400).send({
-                status: 'fail',
-                message: 'Invalid Or Expires Token'
-            });
+            return next(new NotFoundError('No User Found'))
         }
         const user = userResult.rows[0];
         const salt = await bcrypt.genSalt(10);
@@ -251,10 +216,6 @@ exports.verifyForgetPassword = async (req, res, next) => {
             message: 'Password Reset'
         })
     } catch(err) {
-        return res.status(500).send({
-            status: 'error',
-            message: 'Internal Server Error',
-            error: err.message
-        })
+        return next(new AppError(err.message, 500))
     }
 }

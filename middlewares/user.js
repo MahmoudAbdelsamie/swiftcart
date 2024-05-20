@@ -1,23 +1,17 @@
+require('dotenv').config();
 const jwt = require("jsonwebtoken");
 const pool = require("../config/database");
-require('dotenv').config();
+const { UnauthorizedError, AppError } = require("../utils/errors");
 
 exports.isAuthorized = (req, res, next) => {
     const authHeader = req.headers.authorization;
     if(!authHeader) {
-        return res.status(401).send({
-            status: 'fail',
-            message: 'Unauthorized'
-        });
+        return next(new UnauthorizedError());
     }
     const token = authHeader.split(' ')[1];
     jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
         if(err) {
-            return res.status(401).send({
-                status: 'fail',
-                message: 'Unauthorized',
-                error: err.message
-            })
+            return next(new UnauthorizedError(err.message));
         }
         const userId = decoded.id;
         const query = 'SELECT id, username, email, role FROM users WHERE id=$1;';
@@ -29,11 +23,7 @@ exports.isAuthorized = (req, res, next) => {
                 req.user = users.rows[0];
             }
         } catch(err) {
-            return res.status(500).send({
-                status: 'error',
-                message: 'Internal Server Error',
-                error: err.message
-            })
+            return next(new AppError(err.message, 500))
         }
         next();
 

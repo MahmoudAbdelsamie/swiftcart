@@ -1,6 +1,6 @@
 const { addReview, getReviews } = require("../controllers/review");
 const { isAuthorized } = require("../middlewares/user");
-const { handleValidationErrors } = require("../middlewares/validator");
+const { validate } = require("../middlewares/validator");
 const {
   validateAddReview,
   validateGetReviews,
@@ -8,19 +8,12 @@ const {
 
 const router = require("express").Router();
 
-router.post(
-  "/reviews",
-  isAuthorized,
-  validateAddReview,
-  handleValidationErrors,
-  addReview
-);
+router.post("/reviews", isAuthorized, validate(validateAddReview), addReview);
 
 router.get(
   "/reviews/:productId",
   isAuthorized,
-  validateGetReviews,
-  handleValidationErrors,
+  validate(validateGetReviews),
   getReviews
 );
 

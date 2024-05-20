@@ -1,5 +1,6 @@
 const pool = require("../config/database");
 const { getOrCreateCart } = require("../utils/cart");
+const { AppError } = require("../utils/errors");
 
 exports.addToCart = async (req, res, next) => {
   const userId = req.user.id;
@@ -25,11 +26,7 @@ exports.addToCart = async (req, res, next) => {
       message: "Product Added To Cart",
     });
   } catch (err) {
-    return res.status(500).send({
-      status: "error",
-      message: "Internal Server Error",
-      error: err.message,
-    });
+    return next(new AppError(err.message, 500))
   }
 };
 
@@ -72,11 +69,7 @@ exports.getCart = async (req, res, next) => {
       total: totalCartPrice.rows[0].total_cart_price,
     });
   } catch (err) {
-    return res.status(500).send({
-      status: "error",
-      message: "Internal Server Error",
-      error: err.message,
-    });
+    return next(new AppError(err.message, 500))
   }
 };
 
@@ -90,10 +83,6 @@ exports.deleteCartItemById = async (req, res, next) => {
       message: "Cart Item Removed"
     });
   } catch (err) {
-    return res.status(500).send({
-      status: "error",
-      message: "Internal Server Error",
-      error: err.message
-    });
+      return next(new AppError(err.message, 500))
   }
 };

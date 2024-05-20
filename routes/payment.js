@@ -3,7 +3,7 @@ const {
   confirmPayment,
 } = require("../controllers/payment");
 const { isAuthorized } = require("../middlewares/user");
-const { handleValidationErrors } = require("../middlewares/validator");
+const { validate } = require("../middlewares/validator");
 const {
   validateCreatePaymentIntent,
   validateConfirmPayment,
@@ -14,16 +14,14 @@ const router = require("express").Router();
 router.post(
   "/create-payment-intent",
   isAuthorized,
-  validateCreatePaymentIntent,
-  handleValidationErrors,
+  validate(validateCreatePaymentIntent),
   createPaymentIntent
 );
 
 router.post(
   "/orders/:orderId/pay",
   isAuthorized,
-  validateConfirmPayment,
-  handleValidationErrors,
+  validate(validateConfirmPayment),
   confirmPayment
 );
 

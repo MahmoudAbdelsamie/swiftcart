@@ -1,4 +1,5 @@
 const pool = require("../config/database");
+const { NotFoundError, AppError } = require("../utils/errors");
 
 
 
@@ -24,11 +25,7 @@ exports.addReview = async (req, res, next) => {
             data: newReview
         });
     } catch (err) {
-        return res.status(500).send({
-            status: 'error',
-            message: 'Internal Server Error',
-            error: err.message
-        });
+        return next(new AppError(err.message, 500))
     }
 }
 
@@ -51,10 +48,7 @@ exports.getReviews = async (req, res, next) => {
     try {
         const reviewsResult = await pool.query(query, [productId]);
         if(reviewsResult.rowCount < 1) {
-            return res.status(404).send({
-                status: 'fail',
-                message: 'No Reviews Found'
-            })
+            return next(new NotFoundError('No Reviews Found'))
         }
         const reviews = reviewsResult.rows;
         return res.status(200).send({
@@ -64,11 +58,7 @@ exports.getReviews = async (req, res, next) => {
         })
 
     } catch (err) {
-        return res.status(500).send({
-            status: 'error',
-            message: 'Internal Server Error',
-            error: err.message
-        });
+        return next(new AppError(err.message, 500))
     }
 }
 

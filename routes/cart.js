@@ -4,7 +4,7 @@ const {
   deleteCartItemById,
 } = require("../controllers/cart");
 const { isAuthorized } = require("../middlewares/user");
-const { handleValidationErrors } = require("../middlewares/validator");
+const { validate } = require("../middlewares/validator");
 const {
   validateAddToCart,
   validateDeleteCartItemById,
@@ -14,14 +14,13 @@ const router = require("express").Router();
 
 router
   .route("/cart")
-  .post(isAuthorized, validateAddToCart, handleValidationErrors, addToCart)
+  .post(isAuthorized, validate(validateAddToCart), addToCart)
   .get(isAuthorized, getCart);
 
 router.delete(
   "/cart/:cartItemId",
   isAuthorized,
-  validateDeleteCartItemById,
-  handleValidationErrors,
+  validate(validateDeleteCartItemById),
   deleteCartItemById
 );
 

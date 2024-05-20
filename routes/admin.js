@@ -14,11 +14,12 @@ const {
 const { getProductById } = require("../controllers/product");
 const { isAdmin } = require("../middlewares/admin");
 const { isAuthorized } = require("../middlewares/user");
-const { handleValidationErrors } = require("../middlewares/validator");
+const { validate } = require("../middlewares/validator");
 const {
   validateParamsId,
   validateAddProduct,
 } = require("../validations/admin");
+
 
 const router = require("express").Router();
 
@@ -33,8 +34,7 @@ router.post(
   isAuthorized,
   isAdmin,
   upload.single("image"),
-  validateAddProduct,
-  handleValidationErrors,
+  validate(validateAddProduct),
   addProduct
 );
 
@@ -44,9 +44,8 @@ router.put(
   isAuthorized,
   isAdmin,
   upload.single("image"),
-  validateParamsId,
-  validateAddProduct,
-  handleValidationErrors,
+  validate(validateParamsId),
+  validate(validateAddProduct),
   updateProduct
 );
 
@@ -55,8 +54,7 @@ router.delete(
   "/admin/products/:id",
   isAuthorized,
   isAdmin,
-  validateParamsId,
-  handleValidationErrors,
+  validate(validateParamsId),
   deleteProductById
 );
 
@@ -68,8 +66,7 @@ router.get(
   "/admin/products/:id",
   isAuthorized,
   isAdmin,
-  validateParamsId,
-  handleValidationErrors,
+  validate(validateParamsId),
   getProductById
 );
 
@@ -84,8 +81,7 @@ router.get(
   "/admin/users/:id",
   isAuthorized,
   isAdmin,
-  validateParamsId,
-  handleValidationErrors,
+  validate(validateParamsId),
   getUserById
 );
 
@@ -94,8 +90,7 @@ router.delete(
   "/admin/users/:id",
   isAuthorized,
   isAdmin,
-  validateParamsId,
-  handleValidationErrors,
+  validate(validateParamsId),
   deleteUserById
 );
 

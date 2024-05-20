@@ -1,4 +1,5 @@
 const pool = require("../config/database");
+const { NotFoundError, AppError } = require("../utils/errors");
 
 
 exports.addToWishlist = async (req, res, next) => {
@@ -18,11 +19,7 @@ exports.addToWishlist = async (req, res, next) => {
         })
 
     } catch (err) {
-        return res.status(500).send({
-            status: 'error',
-            message: 'Internal Server Error',
-            error: err.message
-        });
+        return next(new AppError(err.message, 500))
     }
 }
 
@@ -40,10 +37,7 @@ exports.getWishlist = async (req, res, next) => {
         const wishlistResult = await pool.query(query, [userId]);
 
         if (wishlistResult.rowCount < 1) {
-            return res.status(404).send({
-                status: 'fail',
-                message: 'No Products Found in Wishlist!'
-            });
+            return next(new NotFoundError('No Wishlist Found'))
         }
 
         const wishlist = wishlistResult.rows;
@@ -53,11 +47,7 @@ exports.getWishlist = async (req, res, next) => {
             data: wishlist
         });
     } catch (err) {
-        return res.status(500).send({
-            status: 'error',
-            message: 'Internal Server Error',
-            error: err.message
-        });
+        return next(new AppError(err.message, 500))
     }
 
 }
@@ -74,10 +64,7 @@ exports.deleteWishlistItem = async (req, res, next) => {
         const wishlistResult = await pool.query(query, [itemId, userId]);
 
         if (wishlistResult.rowCount < 1) {
-            return res.status(404).send({
-                status: 'fail',
-                message: 'Wishlist Item Not Found!'
-            });
+            return next(new NotFoundError('No Wishlist Found'))
         }
         const wishlistItem = wishlistResult.rows[0]
 
@@ -87,11 +74,7 @@ exports.deleteWishlistItem = async (req, res, next) => {
             data: wishlistItem
         });
     } catch (err) {
-        return res.status(500).send({
-            status: 'error',
-            message: 'Internal Server Error',
-            error: err.message
-        });
+        return next(new AppError(err.message, 500))
     }
 
 }

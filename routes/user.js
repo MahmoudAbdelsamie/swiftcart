@@ -8,7 +8,7 @@ const {
   verifyForgetPassword,
 } = require("../controllers/user");
 const { isAuthorized } = require("../middlewares/user");
-const { handleValidationErrors } = require("../middlewares/validator");
+const { validate } = require("../middlewares/validator");
 const {
   validateRegister,
   validateLogin,
@@ -22,33 +22,29 @@ const router = require("express").Router();
 
 router.post(
   "/user/register",
-  validateRegister,
-  handleValidationErrors,
+  validate(validateRegister),
   register
 );
 
-router.post("/user/login", validateLogin, handleValidationErrors, login);
+router.post("/user/login", validate(validateLogin), login);
 
 // Update Password
 router.put(
   "/user/password",
   isAuthorized,
-  validateUpdatePassword,
-  handleValidationErrors,
+  validate(validateUpdatePassword),
   updatePassword
 );
 
 // Forget Password Management
 router.post(
   "/user/password-reset/request",
-  validateForgetPasswordRequest,
-  handleValidationErrors,
+  validate(validateForgetPasswordRequest),
   forgetPasswordRequest
 );
 router.post(
   "/user/password-reset/verify",
-  validateVerifyForgetPassword,
-  handleValidationErrors,
+  validate(validateVerifyForgetPassword),
   verifyForgetPassword
 );
 
@@ -58,8 +54,7 @@ router
   .get(isAuthorized, getUserProfile)
   .put(
     isAuthorized,
-    validateUpdateUserProfile,
-    handleValidationErrors,
+    validate(validateUpdateUserProfile),
     updateUserProfile
   );
 

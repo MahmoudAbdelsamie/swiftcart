@@ -1,4 +1,5 @@
 const pool = require("../config/database");
+const { NotFoundError, AppError } = require("../utils/errors");
 
 
 exports.getProducts = async (req, res, next) => {
@@ -38,15 +39,10 @@ exports.getProducts = async (req, res, next) => {
     `;
     queryParams.push(limit, (page - 1) * limit);
 
-    console.log(sqlQuery)
-    console.log(queryParams);
     try {
         const productsResult = await pool.query(sqlQuery, queryParams);
         if (productsResult.rowCount < 1) {
-            return res.status(404).send({
-                status: 'fail',
-                message: 'No Products Found!'
-            });
+            return next(new NotFoundError('No Products Found'))
         }
         const products = productsResult.rows;
         return res.status(200).send({
@@ -55,11 +51,7 @@ exports.getProducts = async (req, res, next) => {
             data: products
         });
     } catch (err) {
-        return res.status(500).send({
-            status: 'error',
-            message: 'Internal Server Error',
-            error: err.message
-        });
+        return next(new AppError(err.message, 500))
     }
 };
 
@@ -70,7 +62,7 @@ exports.getProductsBySearch = async (req, res, next) => {
     try {
         const productsResult = await pool.query(sqlQuery, [`%${query}%`]);
         if(productsResult.rowCount < 1) {
-            return res.json({ message: 'No Results Matched!' });
+            return next(new NotFoundError('No Products Match'))
         }
         const products = productsResult.rows
         return res.status(200).send({
@@ -79,11 +71,7 @@ exports.getProductsBySearch = async (req, res, next) => {
             data: products
         })
     } catch(err) {
-        return res.status(500).send({
-            status: 'error',
-            message: 'Internal Server Error',
-            error: err.message
-        })
+        return next(new AppError(err.message, 500))
     }
 }
 
@@ -94,10 +82,7 @@ exports.getProductCategories = async (req, res, next) => {
     try {
         const categoriesResult = await pool.query(query);
         if(categoriesResult.rowCount < 1) {
-            return req.status(404).send({
-                status: 'fail',
-                message: 'No Categories Found!'
-            })
+            return next(new NotFoundError('No Categories Found'))
         }
         const categories = categoriesResult.rows;
         return res.status(200).send({
@@ -106,11 +91,7 @@ exports.getProductCategories = async (req, res, next) => {
             data: categories
         })
     } catch(err) {
-        return res.status(500).send({
-            status: 'error',
-            message: 'Internal Server Error',
-            error: err.message
-        })
+        return next(new AppError(err.message, 500))
     }
 }
 
@@ -121,10 +102,7 @@ exports.getProductById = async (req, res, next) => {
         const { id } = req.params;
         const product = await pool.query(query, [id]);
         if(product.rowCount < 1) {
-            return res.status(404).send({
-                status: 'fail',
-                message: 'No Product Found!'
-            })
+            return next(new NotFoundError('No Product Found'))
         }
         return res.status(200).send({
             status: 'success',
@@ -132,11 +110,7 @@ exports.getProductById = async (req, res, next) => {
             data: product.rows[0]
         })
     } catch(err) {
-        return res.status(500).send({
-            status: 'error',
-            message: 'Internal Server Error',
-            error: err.message
-        })
+        return next(new AppError(err.message, 500))
     }
 }
 

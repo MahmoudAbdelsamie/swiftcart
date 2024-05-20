@@ -1,4 +1,5 @@
 const pool = require("../config/database");
+const { NotFoundError, AppError } = require("../utils/errors");
 
 
 exports.addShipping = async (req, res, next) => {
@@ -24,11 +25,7 @@ exports.addShipping = async (req, res, next) => {
             data: newAddress
         })
     } catch (err) {
-        return res.status(500).send({
-            status: 'error',
-            message: 'Internal Server Error',
-            error: err.message
-        });
+        return next(new AppError(err.message, 500))
     }
 };
 
@@ -56,10 +53,7 @@ exports.getShippingStatus = async (req, res, next) => {
     try {
         const result = await pool.query(query, [orderId]);
         if(result.rowCount < 1) {
-            return res.status(404).send({
-                status: 'fail',
-                message: 'No Shipping Information Found!'
-            })
+            return next(new NotFoundError('No Shipping Information Found!'))
         }
         const shippingStatus = result.rows[0];
         return res.status(200).send({
@@ -68,10 +62,6 @@ exports.getShippingStatus = async (req, res, next) => {
             data: shippingStatus
         })
     } catch (err) {
-        return res.status(500).send({
-            status: 'error',
-            message: 'Internal Server Error',
-            error: err.message
-        });
+        return next(new AppError(err.message, 500))
     }
 }

@@ -1,5 +1,6 @@
 const pool = require("../config/database");
 const { getOrCreateCart } = require("../utils/cart");
+const { NotFoundError, AppError } = require("../utils/errors");
 
 
 exports.createOrder = async (req, res, next) => {
@@ -42,10 +43,7 @@ exports.createOrder = async (req, res, next) => {
 
         const cartItemsResult = await pool.query(getCartItemsQuery, [cartId]);
         if(cartItemsResult.rowCount < 1) {
-            return res.status(400).send({
-                status: 'fail',
-                message: 'Cart is Empty!'
-            })
+            return next(new NotFoundError('No Cart Items Found'))
         }
 
         const totalAmount = cartItemsResult.rows.reduce((sum, item) => sum + item.price*item.quantity, 0);
@@ -82,11 +80,7 @@ exports.createOrder = async (req, res, next) => {
             orderId: orderId
         })
     } catch(err) {
-        return res.status(500).send({
-            status: 'error',
-            message: 'Internal Server Error',
-            error: err.message
-        })
+        return next(new AppError(err.message, 500))
     }
 }
 
@@ -127,10 +121,7 @@ exports.getOrderDetails = async (req, res, next) => {
     try {
         const orderResult = await pool.query(orderQuery, [id]);
         if(orderResult.rowCount < 1) {
-            return res.status(404).send({
-                status: 'fail',
-                message: 'No Order Found!'
-            })
+            return next(new NotFoundError('No Order Found'))
         }
         const order = orderResult.rows[0];
         const orderItemsResult = await pool.query(orderItemsQuery ,[id]);
@@ -143,11 +134,7 @@ exports.getOrderDetails = async (req, res, next) => {
         })
         
     } catch(err) {
-        return res.status(500).send({
-            status: 'fail',
-            message: 'Internal Server Error',
-            error: err.message
-        })
+        return next(new AppError(err.message, 500))
     }
 }
 
@@ -187,10 +174,7 @@ exports.getUserOrders = async (req, res, next) => {
     try {
         const ordersResult = await pool.query(ordersQuery, [userId]);
         if(ordersResult.rowCount < 1) {
-            return res.status(404).send({
-                status: 'fail',
-                message: 'No Orders Found!'
-            })
+            return next(new NotFoundError('No Orders Found'));
         }
         const orders = ordersResult.rows;
 
@@ -209,11 +193,7 @@ exports.getUserOrders = async (req, res, next) => {
         })
 
     } catch(err) {
-        return res.status(500).send({
-            status: 'error',
-            message: 'Internal Server Error',
-            error: err.message
-        })
+        return next(new AppError(err.message, 500))
     }
 
 
@@ -236,10 +216,7 @@ exports.getOrderConfirm = async (req, res, next) => {
     try {
         const orderResult = await pool.query(query, [orderId, userId]);
         if(orderResult.rowCount < 1) {
-            return res.status(200).send({
-                message: 'No Order Found',
-                data: []
-            })
+            return next(new NotFoundError('No Order Found'))
         }
         const order = orderResult.rows[0];
         return res.status(200).send({
@@ -249,11 +226,7 @@ exports.getOrderConfirm = async (req, res, next) => {
         })
 
     } catch(err) {
-        return res.status(500).send({
-            status: 'error',
-            message: 'Internal Server Error',
-            error: err.message
-        })
+        return next(new AppError(err.message, 500))
     }
 }
 
@@ -272,10 +245,7 @@ exports.getOrderTrack = async (req, res, next) => {
     try {
         const orderResult = await pool.query(query, [userId, orderId]);
         if(orderResult.rowCount < 1) {
-            return res.status(200).send({
-                message: 'No Order Found',
-                data: []
-            })
+            return next(new NotFoundError('No Order Found'))
         }
         const order = orderResult.rows[0];
         return res.status(200).send({
@@ -284,11 +254,7 @@ exports.getOrderTrack = async (req, res, next) => {
             data: order
         })
     } catch(err) {
-        return res.status(500).send({
-            status: 'error',
-            message: 'Internal Server Error',
-            error: err.message
-        })
+        return next(new AppError(err.message, 500))
     }
 }
 
@@ -325,10 +291,7 @@ exports.getOrdersHistory = async (req, res, next) => {
     try {
         const ordersResult = await pool.query(query, [userId]);
         if(ordersResult.rowCount < 1) {
-            return res.status(200).send({
-                message: 'No Order History Found',
-                data: []
-            })
+            return next(new NotFoundError('No Order History Found'))
         }
         const orderHistory = ordersResult.rows;
         return res.status(200).send({
@@ -337,11 +300,7 @@ exports.getOrdersHistory = async (req, res, next) => {
             data: orderHistory
         })
     } catch(err) {
-        return res.status(500).send({
-            status: 'error',
-            message: 'Internal Server Error',
-            error: err.message
-        })
+        return next(new AppError(err.message, 500))
     }
 }
 

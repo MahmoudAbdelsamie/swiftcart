@@ -1,4 +1,5 @@
 const pool = require('../config/database');
+const { NotFoundError, AppError } = require('../utils/errors');
 
 require('dotenv').config();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
@@ -9,9 +10,7 @@ exports.createPaymentIntent = async (req, res, next) => {
     try {
         const orderResult = await pool.query(query, [orderId]);
         if(orderResult.rowCount < 1) {
-            return res.status(404).send({
-                message: 'No Order Found'
-            })
+            return next(new NotFoundError('No Order Found'))
         }
         const orderTotal = orderResult.rows[0].total;
         const paymentIntent = await stripe.paymentIntents.create({
@@ -26,11 +25,7 @@ exports.createPaymentIntent = async (req, res, next) => {
             paymentIntentId: paymentIntent.id
         })
     } catch(err) {
-        return res.status(500).send({
-            status: 'error',
-            message: 'Internal Server Error',
-            error: err.message
-        })
+        return next(new AppError(err.message, 500))
     }
 
 }
@@ -56,11 +51,7 @@ exports.confirmPayment = async (req, res, next) => {
             })
         }
     } catch(err) {
-        return res.status(500).send({
-            status: 'error',
-            message: 'Internal Server Error',
-            error: err.message
-        })
+        return next(new AppError(err.message, 500))
     }
 
 }

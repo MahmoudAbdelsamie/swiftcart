@@ -1,6 +1,6 @@
 const { addShipping, getShippingStatus } = require("../controllers/shipping");
 const { isAuthorized } = require("../middlewares/user");
-const { handleValidationErrors } = require("../middlewares/validator");
+const { validate } = require("../middlewares/validator");
 const {
   validateAddShipping,
   validateGetShippingStatus,
@@ -11,16 +11,14 @@ const router = require("express").Router();
 router.post(
   "/shipping",
   isAuthorized,
-  validateAddShipping,
-  handleValidationErrors,
+  validate(validateAddShipping),
   addShipping
 );
 
 router.get(
   "/shipping/status/:orderId",
   isAuthorized,
-  validateGetShippingStatus,
-  handleValidationErrors,
+  validate(validateGetShippingStatus),
   getShippingStatus
 );
 
