@@ -1,4 +1,5 @@
 const pool = require("../config/database");
+const { AppError } = require("../utils/errors");
 
 // get users & their addresses
 exports.getUsers = async (req, res, next) => {
@@ -29,11 +30,7 @@ exports.getUsers = async (req, res, next) => {
       data: users.rows,
     });
   } catch (err) {
-    return res.status(500).send({
-      status: "error",
-      message: "Internal Server Error",
-      error: err.message,
-    });
+    return next(new AppError(err.message, 500))
   }
 };
 
