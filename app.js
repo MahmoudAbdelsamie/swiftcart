@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const morgan = require('morgan')
-
+const rateLimit = require('express-rate-limit');
 
 const { testDBConnection } = require('./utils/helper');
 
@@ -29,8 +29,18 @@ const PORT = process.env.PORT || 5000;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+
+// Rate Limiting
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, 
+  });
+app.use(limiter);
+  
+
 app.use(helmet());
-app.use(morgan('combined'))
+app.use(morgan('combined'));
+
 
 app.get('/', (req, res) => {
     res.send('<h1>Welcome To SwiftCart!</h1>');
