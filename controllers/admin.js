@@ -100,6 +100,7 @@ exports.addProduct = async (req, res, next) => {
         const imageBase64 = req.file.buffer.toString("base64");
         const productResult = await pool.query(query, [name, description, price, stock, category_id, imageBase64]);
         const newProduct = productResult.rows[0];
+        setCache(`/api/v1/products`, null, 0); 
         return res.status(201).send({
             status: 'success',
             message: 'Product Added',
@@ -156,6 +157,7 @@ exports.updateProduct = async (req, res, next) => {
       return next(new NotFoundError('No Product Found'))
     }
     const updatedProduct = productResult.rows[0];
+    setCache(`/api/v1/products`, null, 0);
     return res.status(200).send({
       status: 'success',
       message: 'Product Updated',
@@ -172,6 +174,7 @@ exports.deleteProductById = async (req, res, next) => {
   const query = `DELETE FROM products WHERE id = $1;`;
   try {
     await pool.query(query, [id]);
+    setCache(`/api/v1/products`, null, 0);
     return res.status(200).send({
       status: 'success',
       message: 'Product Deleted'

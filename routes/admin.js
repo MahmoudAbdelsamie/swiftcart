@@ -13,6 +13,7 @@ const {
 } = require("../controllers/admin");
 const { getProductById } = require("../controllers/product");
 const { isAdmin } = require("../middlewares/admin");
+const { cache } = require("../middlewares/cache");
 const { isAuthorized } = require("../middlewares/user");
 const { validate } = require("../middlewares/validator");
 const {
@@ -59,7 +60,7 @@ router.delete(
 );
 
 // GET Products
-router.get("/admin/products", isAuthorized, isAdmin, getProducts);
+router.get("/admin/products", isAuthorized, cache, isAdmin, getProducts);
 
 // GET Specific Prodcut
 router.get(
@@ -71,7 +72,7 @@ router.get(
 );
 
 // Get All Orders
-router.get("/admin/orders", isAuthorized, isAdmin, getOrders);
+router.get("/admin/orders", isAuthorized, cache, isAdmin, getOrders);
 
 // Get All Users
 router.get("/admin/users", isAuthorized, isAdmin, getUsers);

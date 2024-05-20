@@ -1,4 +1,5 @@
 const pool = require("../config/database");
+const { setCache } = require("../middlewares/cache");
 const { getOrCreateCart } = require("../utils/cart");
 const { NotFoundError, AppError } = require("../utils/errors");
 
@@ -74,6 +75,7 @@ exports.createOrder = async (req, res, next) => {
         });
         await Promise.all(insertOrderItemsPromises);
         await pool.query(deleteCartItemsQuery, [cartId]);
+        setCache(`/api/v1/admin/orders`, null, 0); 
         return res.status(201).send({
             status: 'success',
             message: 'Order Created',
