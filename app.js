@@ -32,7 +32,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Rate Limiting
 const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
+    windowMs: 15 * 60 * 1000, 
     max: 100, 
   });
 app.use(limiter);
@@ -66,8 +66,8 @@ testDBConnection()
     .then(() => {
         console.log('Database Connected Successfully...')
         app.listen(PORT, () => {
-            console.log(`Server Running On ${PORT}`)
-        })
+            console.log(`Server Running On http://localhost:{PORT}`);
+        });
     })
     .catch(err => {
         console.err(err);
