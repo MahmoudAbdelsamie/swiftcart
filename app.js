@@ -1,5 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const helmet = require('helmet');
+const morgan = require('morgan')
 
 
 const { testDBConnection } = require('./utils/helper');
@@ -25,7 +27,10 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(helmet());
+app.use(morgan('combined'))
 
 app.get('/', (req, res) => {
     res.send('<h1>Welcome To SwiftCart!</h1>');
