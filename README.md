@@ -88,7 +88,7 @@ The API documentation is available and can be accessed using Swagger UI. Once th
 http://localhost:5000/api-docs
 ```
 
-OR
+OR Read it online at
 
 ```
 https://app.swaggerhub.com/apis/mhmoud.swe/SwiftCart/1.0.0#
