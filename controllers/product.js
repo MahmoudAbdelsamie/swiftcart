@@ -4,56 +4,80 @@ const { NotFoundError, AppError } = require("../utils/errors");
 
 exports.getProducts = async (req, res, next) => {
     const {
-        query = '',
         category,
         priceMin,
         priceMax,
+        sort = 'created_at', 
         page = 1,
         limit = 10
     } = req.query;
 
     let sqlQuery = `
-        SELECT p.*, c.name AS category_name, ts_rank(p.search_vector, plainto_tsquery($1)) AS rank
+        SELECT p.*, c.name AS category_name
         FROM products p
         JOIN categories c ON p.category_id = c.id
-        WHERE plainto_tsquery($1) @@ p.search_vector
+        WHERE 1=1
     `;
-    let queryParams = [query];
+    let countQuery = `
+        SELECT COUNT(*) AS total
+        FROM products p
+        JOIN categories c ON p.category_id = c.id
+        WHERE 1=1
+    `;
+    let queryParams = [];
+    let countParams = [];
 
     if (category) {
         sqlQuery += ` AND c.name = $${queryParams.length + 1}`;
+        countQuery += ` AND c.name = $${countParams.length + 1}`;
         queryParams.push(category);
+        countParams.push(category);
     }
     if (priceMin) {
         sqlQuery += ` AND p.price >= $${queryParams.length + 1}`;
+        countQuery += ` AND p.price >= $${countParams.length + 1}`;
         queryParams.push(priceMin);
+        countParams.push(priceMin);
     }
     if (priceMax) {
         sqlQuery += ` AND p.price <= $${queryParams.length + 1}`;
+        countQuery += ` AND p.price <= $${countParams.length + 1}`;
         queryParams.push(priceMax);
+        countParams.push(priceMax);
     }
 
-    sqlQuery += `
-        ORDER BY rank DESC
-        LIMIT $${queryParams.length + 1} OFFSET $${queryParams.length + 2}
-    `;
-    queryParams.push(limit, (page - 1) * limit);
+    sqlQuery += ` ORDER BY p.${sort}`;
+    
+    sqlQuery += ` LIMIT $${queryParams.length + 1} OFFSET $${queryParams.length + 2}`;
+    queryParams.push(parseInt(limit), (parseInt(page) - 1) * parseInt(limit));
 
     try {
         const productsResult = await pool.query(sqlQuery, queryParams);
-        if (productsResult.rowCount < 1) {
-            return next(new NotFoundError('No Products Found'))
-        }
+        const countResult = await pool.query(countQuery, countParams);
+        const totalProducts = countResult.rows[0].total;
+        const totalPages = Math.ceil(totalProducts / limit);
+
         const products = productsResult.rows;
         return res.status(200).send({
             status: 'success',
             message: 'Products Retrieved',
-            data: products
+            data: {
+                products,
+                pagination: {
+                    totalProducts,
+                    totalPages,
+                    currentPage: parseInt(page),
+                    limit: parseInt(limit)
+                }
+            }
         });
     } catch (err) {
-        return next(new AppError(err.message, 500))
+        console.error('Error executing query:', err.message);
+        return next(new AppError(err.message, 500));
     }
 };
+
+
 
 
 exports.getProductsBySearch = async (req, res, next) => {

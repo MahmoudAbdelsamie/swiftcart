@@ -66,7 +66,7 @@ testDBConnection()
     .then(() => {
         console.log('Database Connected Successfully...')
         app.listen(PORT, () => {
-            console.log(`Server Running On http://localhost:{PORT}`);
+            console.log(`Server Running On http://localhost:${PORT}`);
         });
     })
     .catch(err => {
