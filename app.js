@@ -5,6 +5,7 @@ const morgan = require('morgan')
 const rateLimit = require('express-rate-limit');
 
 const { testDBConnection } = require('./utils/helper');
+const swaggerSetup = require('./swagger')
 
 const productRoutes = require('./routes/product');
 const userRoutes = require('./routes/user');
@@ -57,7 +58,7 @@ app.use('/api/v1', shippingRoutes);
 app.use('/api/v1', reviewRoutes);
 app.use('/api/v1', wishlistRoutes);
 
-
+swaggerSetup(app);
 
 
 app.use(errorHandler);

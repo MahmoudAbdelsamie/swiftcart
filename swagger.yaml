@@ -1,0 +1,833 @@
+openapi: 3.0.1
+info:
+  title: SwiftCart API
+  description: API documentation for the SwiftCart application
+  version: 1.0.0
+servers:
+  - url: http://localhost:5000/api/v1
+tags:
+  - name: Admin
+  - name: Cart
+  - name: Order
+  - name: Payment
+  - name: Product
+  - name: Review
+  - name: Shipping
+  - name: User
+  - name: Wishlist
+paths:
+  /admin/products:
+    post:
+      summary: Add a new product
+      tags:
+        - Admin
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                price:
+                  type: number
+                image:
+                  type: string
+                  format: binary
+                category:
+                  type: string
+              required:
+                - name
+                - description
+                - price
+                - category
+      responses:
+        '201':
+          description: Product created successfully
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+    get:
+      summary: Get all products
+      tags:
+        - Admin
+      responses:
+        '200':
+          description: Products retrieved
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+  /admin/products/{id}:
+    put:
+      summary: Update a product
+      tags:
+        - Admin
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                price:
+                  type: number
+                image:
+                  type: string
+                  format: binary
+                category:
+                  type: string
+              required:
+                - name
+                - description
+                - price
+                - category
+      responses:
+        '200':
+          description: Product updated successfully
+        '401':
+          description: Unauthorized
+        '404':
+          description: Product not found
+        '500':
+          description: Internal server error
+    delete:
+      summary: Delete a product
+      tags:
+        - Admin
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Product deleted successfully
+        '401':
+          description: Unauthorized
+        '404':
+          description: Product not found
+        '500':
+          description: Internal server error
+    get:
+      summary: Get a product by ID
+      tags:
+        - Admin
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Product retrieved
+        '401':
+          description: Unauthorized
+        '404':
+          description: Product not found
+        '500':
+          description: Internal server error
+  /admin/orders:
+    get:
+      summary: Get all orders
+      tags:
+        - Admin
+      responses:
+        '200':
+          description: Orders retrieved
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+  /admin/users:
+    get:
+      summary: Get all users
+      tags:
+        - Admin
+      responses:
+        '200':
+          description: Users retrieved
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+  /admin/users/{id}:
+    get:
+      summary: Get a user by ID
+      tags:
+        - Admin
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User retrieved
+        '401':
+          description: Unauthorized
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error
+    delete:
+      summary: Delete a user by ID
+      tags:
+        - Admin
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User deleted
+        '401':
+          description: Unauthorized
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error
+  /admin/reports/sales:
+    get:
+      summary: Get sales reports
+      tags:
+        - Admin
+      responses:
+        '200':
+          description: Sales reports retrieved
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+  /cart:
+    post:
+      summary: Add to cart
+      tags:
+        - Cart
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                productId:
+                  type: string
+                quantity:
+                  type: number
+              required:
+                - productId
+                - quantity
+      responses:
+        '201':
+          description: Added to cart
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+    get:
+      summary: Get cart
+      tags:
+        - Cart
+      responses:
+        '200':
+          description: Cart retrieved
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+  /cart/{cartItemId}:
+    delete:
+      summary: Delete cart item
+      tags:
+        - Cart
+      parameters:
+        - name: cartItemId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Cart item deleted
+        '401':
+          description: Unauthorized
+        '404':
+          description: Cart item not found
+        '500':
+          description: Internal server error
+  /orders:
+    post:
+      summary: Create an order
+      tags:
+        - Order
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cartId:
+                  type: string
+                shippingAddress:
+                  type: string
+                paymentMethod:
+                  type: string
+              required:
+                - cartId
+                - shippingAddress
+                - paymentMethod
+      responses:
+        '201':
+          description: Order created
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+  /orders/history:
+    get:
+      summary: Get order history
+      tags:
+        - Order
+      responses:
+        '200':
+          description: Order history retrieved
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+  /orders/{id}:
+    get:
+      summary: Get order details
+      tags:
+        - Order
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Order details retrieved
+        '401':
+          description: Unauthorized
+        '404':
+          description: Order not found
+        '500':
+          description: Internal server error
+  /user/orders:
+    get:
+      summary: Get user orders
+      tags:
+        - Order
+      responses:
+        '200':
+          description: User orders retrieved
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+  /orders/confirm/{orderId}:
+    get:
+      summary: Confirm order
+      tags:
+        - Order
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Order confirmed
+        '401':
+          description: Unauthorized
+        '404':
+          description: Order not found
+        '500':
+          description: Internal server error
+  /orders/track/{orderId}:
+    get:
+      summary: Track order
+      tags:
+        - Order
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Order tracking information retrieved
+        '401':
+          description: Unauthorized
+        '404':
+          description: Order not found
+        '500':
+          description: Internal server error
+  /create-payment-intent:
+    post:
+      summary: Create a payment intent
+      tags:
+        - Payment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: number
+              required:
+                - amount
+      responses:
+        '201':
+          description: Payment intent created
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+  /orders/{orderId}/pay:
+    post:
+      summary: Confirm a payment
+      tags:
+        - Payment
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                paymentMethodId:
+                  type: string
+              required:
+                - paymentMethodId
+      responses:
+        '200':
+          description: Payment confirmed
+        '401':
+          description: Unauthorized
+        '404':
+          description: Order not found
+        '500':
+          description: Internal server error
+  /products:
+    get:
+      summary: Get products
+      tags:
+        - Product
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: priceMin
+          in: query
+          schema:
+            type: number
+        - name: priceMax
+          in: query
+          schema:
+            type: number
+        - name: sortBy
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: number
+        - name: limit
+          in: query
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Products retrieved
+        '500':
+          description: Internal server error
+  /products/search:
+    get:
+      summary: Search products
+      tags:
+        - Product
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Products retrieved
+        '500':
+          description: Internal server error
+  /products/categories:
+    get:
+      summary: Get product categories
+      tags:
+        - Product
+      responses:
+        '200':
+          description: Categories retrieved
+        '500':
+          description: Internal server error
+  /product/{id}:
+    get:
+      summary: Get product by ID
+      tags:
+        - Product
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Product retrieved
+        '404':
+          description: Product not found
+        '500':
+          description: Internal server error
+  /reviews:
+    post:
+      summary: Add a review
+      tags:
+        - Review
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                productId:
+                  type: string
+                rating:
+                  type: number
+                comment:
+                  type: string
+              required:
+                - productId
+                - rating
+                - comment
+      responses:
+        '201':
+          description: Review added
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+  /reviews/{productId}:
+    get:
+      summary: Get reviews for a product
+      tags:
+        - Review
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Reviews retrieved
+        '404':
+          description: Product not found
+        '500':
+          description: Internal server error
+  /shipping:
+    post:
+      summary: Add shipping information
+      tags:
+        - Shipping
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orderId:
+                  type: string
+                address:
+                  type: string
+                city:
+                  type: string
+                postalCode:
+                  type: string
+                country:
+                  type: string
+              required:
+                - orderId
+                - address
+                - city
+                - postalCode
+                - country
+      responses:
+        '201':
+          description: Shipping information added
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+  /shipping/status/{orderId}:
+    get:
+      summary: Get shipping status
+      tags:
+        - Shipping
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Shipping status retrieved
+        '404':
+          description: Order not found
+        '500':
+          description: Internal server error
+  /user/register:
+    post:
+      summary: Register a new user
+      tags:
+        - User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+                - username
+                - email
+                - password
+      responses:
+        '201':
+          description: User registered
+        '400':
+          description: Validation error
+        '500':
+          description: Internal server error
+  /user/login:
+    post:
+      summary: User login
+      tags:
+        - User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+                - email
+                - password
+      responses:
+        '200':
+          description: User logged in
+        '400':
+          description: Invalid credentials
+        '500':
+          description: Internal server error
+  /user/password:
+    put:
+      summary: Update user password
+      tags:
+        - User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                currentPassword:
+                  type: string
+                newPassword:
+                  type: string
+              required:
+                - currentPassword
+                - newPassword
+      responses:
+        '200':
+          description: Password updated
+        '400':
+          description: Validation error
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+  /user/password-reset/request:
+    post:
+      summary: Request password reset
+      tags:
+        - User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+              required:
+                - email
+      responses:
+        '200':
+          description: Password reset requested
+        '400':
+          description: Validation error
+        '500':
+          description: Internal server error
+  /user/password-reset/verify:
+    post:
+      summary: Verify password reset
+      tags:
+        - User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                newPassword:
+                  type: string
+              required:
+                - token
+                - newPassword
+      responses:
+        '200':
+          description: Password reset verified
+        '400':
+          description: Validation error
+        '500':
+          description: Internal server error
+  /user/profile:
+    get:
+      summary: Get user profile
+      tags:
+        - User
+      responses:
+        '200':
+          description: User profile retrieved
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+    put:
+      summary: Update user profile
+      tags:
+        - User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+              required:
+                - username
+                - email
+      responses:
+        '200':
+          description: User profile updated
+        '400':
+          description: Validation error
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+  /wishlist:
+    post:
+      summary: Add to wishlist
+      tags:
+        - Wishlist
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                productId:
+                  type: string
+              required:
+                - productId
+      responses:
+        '201':
+          description: Added to wishlist
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+    get:
+      summary: Get wishlist
+      tags:
+        - Wishlist
+      responses:
+        '200':
+          description: Wishlist retrieved
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+  /wishlist/{itemId}:
+    delete:
+      summary: Delete wishlist item
+      tags:
+        - Wishlist
+      parameters:
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Wishlist item deleted
+        '401':
+          description: Unauthorized
+        '404':
+          description: Wishlist item not found
+        '500':
+          description: Internal server error
