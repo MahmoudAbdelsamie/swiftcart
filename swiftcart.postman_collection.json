@@ -1,0 +1,1432 @@
+{
+	"info": {
+		"_postman_id": "4da7cac9-08f8-4eab-beab-65e814e57b17",
+		"name": "swiftcart",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31638566"
+	},
+	"item": [
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"Ahmed\",\n    \"email\": \"ahmed@gmail.com\",\n    \"password\": \"Mm@12345\",\n    \"confirmPassword\": \"Mm@12345\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/api/v1/user/register",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"ahmed@gmail.com\",\n    \"password\": \"Mm@12345\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/api/v1/user/login",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-user-profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/api/v1/user/profile",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-user-profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"Mahmoud\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/api/v1/user/profile",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-user-password",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"oldPassword\": \"Mm@12345\",\n    \"newPassword\": \"Mm#12345\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/api/v1/user/password",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "forget-password-request",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"mhmoud.swe@gmail.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/api/v1/user/password-reset/request",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"password-reset",
+								"request"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "verify-forget-password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"token\": \"614101df4e922cbf930cbc6690ceece996a3db1fcf549546ad9ee58b92321d82\",\n    \"newPassword\": \"Hh#12345\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/api/v1/user/password-reset/verify",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"password-reset",
+								"verify"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "product",
+			"item": [
+				{
+					"name": "get-products",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/api/v1/products?query=phone&category=Electronics&priceMin=100&priceMax=1000&page=1&limit=10",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"products"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "phone"
+								},
+								{
+									"key": "category",
+									"value": "Electronics"
+								},
+								{
+									"key": "priceMin",
+									"value": "100"
+								},
+								{
+									"key": "priceMax",
+									"value": "1000"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-product-by-id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/api/v1/product/2",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"product",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-products-by-search",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/api/v1/products/search?query=laptop",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"products",
+								"search"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "laptop"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-products-categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/api/v1/products/categories",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"products",
+								"categories"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "cart",
+			"item": [
+				{
+					"name": "add-item-to-cart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"productId\": 7,\n    \"quantity\": 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/api/v1/cart",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"cart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-cart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/api/v1/cart",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"cart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete-cart-item",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/api/v1/cart/5",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"cart",
+								"5"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "admin",
+			"item": [
+				{
+					"name": "users",
+					"item": [
+						{
+							"name": "get-users",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{local}}/api/v1/admin/users",
+									"host": [
+										"{{local}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get-user",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{local}}/api/v1/admin/users/3",
+									"host": [
+										"{{local}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"users",
+										"3"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete-user-by-id",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{local}}/api/v1/admin/users/3",
+									"host": [
+										"{{local}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"users",
+										"3"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "products",
+					"item": [
+						{
+							"name": "add-product",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "name",
+											"value": "Smartphone X",
+											"type": "text"
+										},
+										{
+											"key": "description",
+											"value": "A powerful and feature-rich smartphone with advanced camera capabilities.",
+											"type": "text"
+										},
+										{
+											"key": "price",
+											"value": "699.99",
+											"type": "text"
+										},
+										{
+											"key": "stock",
+											"value": "50",
+											"type": "text"
+										},
+										{
+											"key": "category_id",
+											"value": "3",
+											"type": "text"
+										},
+										{
+											"key": "image",
+											"type": "file",
+											"src": "/home/mahmoud/Downloads/file.jpg"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{local}}/api/v1/admin/products",
+									"host": [
+										"{{local}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"products"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update-product",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "name",
+											"value": "Smartphone X Max",
+											"type": "text"
+										},
+										{
+											"key": "description",
+											"value": "A powerful and feature-rich smartphone with advanced camera capabilities.",
+											"type": "text"
+										},
+										{
+											"key": "price",
+											"value": "699.99",
+											"type": "text"
+										},
+										{
+											"key": "stock",
+											"value": "50",
+											"type": "text"
+										},
+										{
+											"key": "category_id",
+											"value": "3",
+											"type": "text"
+										},
+										{
+											"key": "image",
+											"type": "file",
+											"src": "/home/mahmoud/My_Data/other/licensed-image (2).jpeg",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "{{local}}/api/v1/admin/products/21",
+									"host": [
+										"{{local}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"products",
+										"21"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete-product",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{local}}/api/v1/admin/products/21",
+									"host": [
+										"{{local}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"products",
+										"21"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get-products",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{local}}/api/v1/admin/products",
+									"host": [
+										"{{local}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"products"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get-product-by-id",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{local}}/api/v1/admin/products/20",
+									"host": [
+										"{{local}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"products",
+										"20"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "orders",
+					"item": [
+						{
+							"name": "get-orders",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{local}}/api/v1/admin/orders",
+									"host": [
+										"{{local}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"orders"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "reports",
+					"item": [
+						{
+							"name": "get-sales-reports",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{local}}/api/v1/admin/reports/sales",
+									"host": [
+										"{{local}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"reports",
+										"sales"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "order",
+			"item": [
+				{
+					"name": "create-order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"shippingAddress\": {\n        \"street\": \"123 El Tahrir St\",\n        \"city\": \"Cairo\",\n        \"state\": \"Cairo\",\n        \"zip\": \"11511\",\n        \"country\": \"Egypt\"\n    },\n    \"paymentMethod\": \"stripe\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/api/v1/orders",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-order-details",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/api/v1/orders/6",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"orders",
+								"6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-user-orders",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/api/v1/user/orders",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-order-confirm",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/api/v1/orders/confirm/1",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"orders",
+								"confirm",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-order-tracking",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/api/v1/orders/track/1",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"orders",
+								"track",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-orders-history",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/api/v1/orders/history",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"orders",
+								"history"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "payments",
+			"item": [
+				{
+					"name": "create-payment-intent",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"orderId\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/api/v1/create-payment-intent",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"create-payment-intent"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "confirm-payment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"paymentIntentId\": \"pi_3PIO3fLIPIckcWHz0jhTWk66\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/api/v1/orders/1/pay",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"orders",
+								"1",
+								"pay"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "shipping",
+			"item": [
+				{
+					"name": "add-shipping",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"street\": \"456 Al Azhar St\",\n    \"city\": \"Giza\",\n    \"state\": \"Giza Governorate\",\n    \"zip\": \"12511\",\n    \"country\": \"Egypt\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/api/v1/shipping",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"shipping"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-shipping-status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/api/v1/shipping/status/1",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"shipping",
+								"status",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "reviews",
+			"item": [
+				{
+					"name": "add-review",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"productId\": 2,\n    \"comment\": \"This is The Best Laptop I ever had in my life\",\n    \"rating\": 5\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/api/v1/reviews",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-product-reviews",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/api/v1/reviews/2",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reviews",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "wishlist",
+			"item": [
+				{
+					"name": "add-to-wishlist",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"productId\": 2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/api/v1/wishlist",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"wishlist"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-wishlist",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/api/v1/wishlist",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"wishlist"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete-wishlist-item",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/api/v1/wishlist/4",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"wishlist",
+								"4"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "local",
+			"value": "http://localhost:5000",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzE2MDUyNzI3fQ.3srtzwCTVd7iPEGns-Y9MUb_k_5e7-fVUxQeVb7CZbY",
+			"type": "string"
+		}
+	]
+}
